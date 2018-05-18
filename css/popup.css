@@ -1,0 +1,42 @@
+.body {
+    font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+    text-align: left;
+}
+
+#sel-label{
+    width: 120px;
+    /*border-bottom: 2px solid black;*/
+}
+
+#sel-label p{
+    margin-top: 4px;
+    margin-bottom: 0px;
+}
+
+#trans-select {
+    font-size: 13px;
+    width: 120px;
+}
+
+.popup-select {
+    color: #23537c;
+    line-height: 15px;
+    font-size: 13px;
+    margin-top: 4px;
+    margin-bottom: 1px;
+    padding: 0px;
+    border: 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.popup-select-on {
+    background-color: #337ab7;
+    color: #fff;
+}
+
+.popup-select p{
+    margin-top: 4px;
+    margin-bottom: 4px;
+}

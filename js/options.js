@@ -16,8 +16,8 @@ function constructOptions(kButtonColors) {
       })
     });
     //fix up
-    let buttonDiv = document.getElementById('buttondiv');
-    buttonDiv.appendChild(button);
+    let buttonDiv = document.getElementById('buttonDiv');
+    //buttonDiv.appendChild(button);
   }
 }
 

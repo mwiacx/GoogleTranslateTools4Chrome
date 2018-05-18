@@ -4,11 +4,22 @@
 
 'use strict';
 
-let changeColor = document.getElementById('changeColor');
+//let changeColor = document.getElementById('changeColor');
 
-chrome.storage.sync.get('color', function(data) {
-    changeColor.style.backgroundColor = data.color;
-    changeColor.setAttribute('value', data.color);
+chrome.storage.sync.get('Trans_Engine', function(data) {
+    var selected = data.Trans_Engine;
+    var trans_select_google = document.getElementById('sel-google');
+    var trans_select_baidu = document.getElementById('sel-baidu');  
+    if ('Google' == selected){
+        trans_select_google.className = 'popup-select popup-select-on';
+        trans_select_baidu.className = 'popup-select';
+    }
+    else if ('Baidu' == selected){
+        trans_select_google.className = 'popup-select';
+        trans_select_baidu.className = 'popup-select popup-select-on';
+    }
+    //changeColor.style.backgroundColor = data.color;
+    //changeColor.setAttribute('value', data.color);
     /*
     changeColor.onclick = function(element) {
         let color = element.target.value;
@@ -22,25 +33,16 @@ chrome.storage.sync.get('color', function(data) {
     /*
      * Remove extra newline in copied pdf text.
      */
-    changeColor.onclick = function(element) {
-        let color = element.target.value;
-        var script = '' +
-            'function removeNewLine(){' +
-            'var textarea = document.getElementById("source");' +
-            'console.log(textarea.value);' +
-            //'document.body.style.backgroundColor = "' + color + '";' +
-            'var string = textarea.value;' +
-            'var re = new RegExp(\'\\n\',"gm");' +
-            'var result = string.replace(re, "");' +
-            'console.log(result);' +
-            'textarea.value = result;' +
-            '}' +
-            'removeNewLine();';
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.executeScript(
-                tabs[0].id, {code: script}
-            );
-        });
+    trans_select_baidu.onclick = function(element) {
+        trans_select_google.className = 'popup-select';
+        trans_select_baidu.className = 'popup-select popup-select-on';
+        chrome.storage.sync.set({Trans_Engine: 'Baidu'}, function(){});
+        window.open("http://fanyi.baidu.com");
+    };
+    trans_select_google.onclick = function(element) {
+        trans_select_google.className = 'popup-select popup-select-on';
+        trans_select_baidu.className = 'popup-select';
+        chrome.storage.sync.set({Trans_Engine: 'Google'}, function(){});
+        window.open("https://translate.google.cn");
     };
 });
-
