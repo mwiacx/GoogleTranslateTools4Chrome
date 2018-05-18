@@ -29,7 +29,7 @@ function removeNewLine(){
         textarea = document.getElementById("baidu_translate_input");
     var string = textarea.value;
     var re = new RegExp("\\n", "gm");
-    var result = string.replace(re, "");
+    var result = string.replace(re, " ");
     //console.log(result);
     textarea.value = result;
 }
