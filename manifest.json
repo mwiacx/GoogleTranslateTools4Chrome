@@ -26,7 +26,7 @@
     "options_page": "options.html",
     "content_scripts": [
         {
-            "matches": ["https://translate.google.cn/*", "http://fanyi.baidu.com/*"],
+            "matches": ["https://translate.google.cn/*", "http://fanyi.baidu.com/*", "https://translate.google.com.hk/*"],
             "css": ["css/myStyles.css"],
             "js": ["js/contentScript.js"]
         }

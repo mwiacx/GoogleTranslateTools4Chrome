@@ -27,11 +27,27 @@ function removeNewLine(){
         textarea = document.getElementById("source");
     else if ("fanyi.baidu.com" == domain)
         textarea = document.getElementById("baidu_translate_input");
+
+    /* Remove all the newline in String. */
     var string = textarea.value;
     var re = new RegExp("\\n", "gm");
-    var result = string.replace(re, " ");
+    string = string.replace(re, " ");
+    //console.log(string);
+
+    /* Let every sentence separated by a blank line. */
+    re = new RegExp("[\.!;]\\s*");
+    var sentences = string.split(re, 100);
+    var result = sentences[0]+"."; /* TODO: Use the original punctuation */
+    for (var i = 1; i < sentences.length-1; i++) // length-1: remove the extra blank lines.
+    {
+        result += "\n";
+        result += sentences[i]+"."; /* TODO: Use the original punctuation */
+    }
+    /* Rewrite the textarea. */
     //console.log(result);
+    //document.getElementById("gt-submit").blur();
     textarea.value = result;
+    //textarea.focus();
 }
 
 function inject(){
