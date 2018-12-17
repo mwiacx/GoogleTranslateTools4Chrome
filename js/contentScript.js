@@ -1,8 +1,4 @@
-var sentences = null;
-var tSentences = null;
-
-function removeNewLine(){
-
+function getSrcSentences(){
     var domain = document.domain;
     var textarea;
     if ("translate.google.cn" == domain ||
@@ -18,9 +14,39 @@ function removeNewLine(){
     //console.log(string);
 
     /* Let every sentence separated by a blank line. */
-    re = new RegExp("[\.!;]\\s*");
-    reviseRe = new RegExp(".*et al$"); // 修正et al.的换行问题
-    sentences = string.split(re, 100);
+    var re = new RegExp("[\.!;]\\s*");
+    var sentences = string.split(re, 100);
+    return sentences;
+}
+
+function getDstSentences() {
+    /* Get translate text, src text is already in sentences array*/
+    var translateSpan = document.getElementsByClassName("tlid-translation translation");
+    if (translateSpan.length != 1)
+        return;
+
+    //console.log(translateSpan[0].innerText);
+    var allText = translateSpan[0].innerText;
+    var re = new RegExp("\\n", "gm");
+    allText = allText.replace(re, " ");
+    /* split translated text into sentences */
+    re = new RegExp("[。！；]\\s*");
+    tSentences = allText.split(re, 100);
+
+    return tSentences;
+}
+
+function removeNewLine(){
+    var domain = document.domain;
+    var textarea;
+    if ("translate.google.cn" == domain ||
+        "translate.google.com.hk" == domain)
+        textarea = document.getElementById("source");
+    else if ("fanyi.baidu.com" == domain)
+        textarea = document.getElementById("baidu_translate_input");
+
+    var sentences = getSrcSentences();
+    var reviseRe = new RegExp(".*et al$"); // 修正et al.的换行问题
     var result = "";
     for (var i = 0; i < sentences.length-1; i++) // length-1: remove the extra blank lines.
     {
@@ -51,30 +77,19 @@ function translateContrast(){
     );
     if (inject_divs.length != 1)
         return;
-    
-    /* Get translate text, src text is already in sentences array*/
-    var translateSpan = document.getElementsByClassName("tlid-translation translation");
-    if (translateSpan.length != 1 || sentences == null)
-        return;
-
-    var translationEntrys = translateSpan[0].childNodes;
-    tSentences = new Array();
-    for(var i = 0, j = 0; i < translationEntrys.length; i+=2, j++) {
-        var entry = translationEntrys[i];
-        //console.log(entry.innerText);
-        tSentences[j] = entry.innerText;
-    }
-    /* Create constrast */
     inject_div = inject_divs[0];
-    for (var i = 0; i < sentences.length-1; i++) {
+    /* Create constrast */
+    var sSentences = getSrcSentences();
+    var tSentences = getDstSentences();
+    for (var i = 0; i < sSentences.length-1; i++) {
         var entryDiv = document.createElement("div");
         entryDiv.setAttribute("class", "ijt_constrast_entry");
         var leftTextDiv = document.createElement("div");
         leftTextDiv.setAttribute("class", "ijt_constrast_left_text");
-        leftTextDiv.innerText = sentences[i];
+        leftTextDiv.innerText = sSentences[i] + ".";
         var rightTextDiv = document.createElement("div");
         rightTextDiv.setAttribute("class", "ijt_constrast_right_text");
-        rightTextDiv.innerText = tSentences[i];
+        rightTextDiv.innerText = tSentences[i] + "。";
         entryDiv.appendChild(leftTextDiv);
         entryDiv.appendChild(rightTextDiv);
         mainDiv.appendChild(entryDiv);
