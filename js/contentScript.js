@@ -121,14 +121,16 @@ function allRoutine() {
     else if ("fanyi.baidu.com" == domain)
         textarea = document.getElementById("baidu_translate_input");
 
-    /* Init clipboard */
-    //clipboardJsImport();
-    //new ClipboardJS(".btn");
-    textarea.value = window.clipboardData.getData('text');
-    /* remove newline */
+    /* 2. clear and focus on textarea */
+    textarea.focus();
+    textarea.value = "";
+    textarea.focus();
+    /* 3. call paste command */
+    document.execCommand("paste");
+    /* 4. remove newline */
     removeNewLine();
-    /* wait for translate then call contrast */
-    setTimeout("translateContrast()", 4000);
+    /* 5. wait for translate then call contrast */
+    setTimeout("translateContrast()", 2000);
 }
 
 function inject(){
@@ -157,10 +159,10 @@ function inject(){
             button_newline.setAttribute("id", "gt-remove-button");
             inject_div[0].appendChild(button_newline);
             /* add one-shot button into inject_div */
-            //button_oneshot = document.createElement("button");
-            //button_oneshot.innerText = "一键翻译";
-            //button_oneshot.setAttribute("id", "gt-oneshot-button");
-            //inject_div[0].appendChild(button_oneshot);
+            button_oneshot = document.createElement("button");
+            button_oneshot.innerText = "一键翻译";
+            button_oneshot.setAttribute("id", "gt-oneshot-button");
+            inject_div[0].appendChild(button_oneshot);
         }
     }
     else if ("fanyi.baidu.com" == domain)

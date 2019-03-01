@@ -36,6 +36,8 @@
         "tabs",
         "storage",
         "declarativeContent",
+        "clipboardRead",
+        "clipboardWrite",
         "https://translate.google.cn/*"
     ]
 }
