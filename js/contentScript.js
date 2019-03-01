@@ -99,12 +99,45 @@ function translateContrast(){
     delete(tSentences);
 }
 
+/* all the routine */
+
+function clipboardJsImport() {
+    /*
+     * <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+     */
+    new_element=document.createElement("script");
+    new_element.setAttribute("type","text/javascript");
+    new_element.setAttribute("src","https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js");
+    document.body.appendChild(new_element);
+}
+
+function allRoutine() {
+    /* 1. copy clipboardData to input */
+    var domain = document.domain;
+    var textarea;
+    if ("translate.google.cn" == domain ||
+        "translate.google.com.hk" == domain)
+        textarea = document.getElementById("source");
+    else if ("fanyi.baidu.com" == domain)
+        textarea = document.getElementById("baidu_translate_input");
+
+    /* Init clipboard */
+    //clipboardJsImport();
+    //new ClipboardJS(".btn");
+    textarea.value = window.clipboardData.getData('text');
+    /* remove newline */
+    removeNewLine();
+    /* wait for translate then call contrast */
+    setTimeout("translateContrast()", 4000);
+}
+
 function inject(){
     //console.log("inject success!");
     var domain = document.domain;
     //console.log(domain);
     var button_newline = null;
     var button_contrast = null;
+    var button_oneshot = null;
     if ("translate.google.cn" == domain ||
         "translate.google.com.hk" == domain){
 
@@ -123,10 +156,15 @@ function inject(){
             button_newline.innerText = "修正换行";
             button_newline.setAttribute("id", "gt-remove-button");
             inject_div[0].appendChild(button_newline);
+            /* add one-shot button into inject_div */
+            //button_oneshot = document.createElement("button");
+            //button_oneshot.innerText = "一键翻译";
+            //button_oneshot.setAttribute("id", "gt-oneshot-button");
+            //inject_div[0].appendChild(button_oneshot);
         }
     }
     else if ("fanyi.baidu.com" == domain)
-    button_newline = document.getElementById("translate-button");
+        button_newline = document.getElementById("translate-button");
     /*
     * gt-submit本身有一个click事件-> translate
     * 添加第二个事件，该事件触发应该在click之前，保证先去除回车
@@ -136,6 +174,8 @@ function inject(){
         button_newline.addEventListener("mousedown", removeNewLine);
     if (button_contrast)
         button_contrast.addEventListener("mousedown", translateContrast);
+    if (button_oneshot)
+        button_oneshot.addEventListener("mousedown", allRoutine);
     //console.log("OK?");
 }
 
