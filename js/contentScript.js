@@ -1,4 +1,15 @@
-function getSrcSentences(){
+var excludedRegExps = new Array(
+    /* i.e. */
+    "(?<=i\\.e)\\.|(?<=i)\\.(?=e)",
+    /* e.g. */
+    "(?<=e\\.g)\\.|(?<=e)\\.(?=g)",
+    /* et. al */
+    "(?<=et)\\.",
+    /* sec 2.3.4 */
+    "(?<=[0-9]+)\\.(?=[0-9]+)")
+
+function genSrcSentences(){
+    /* 1. get textarea */
     var domain = document.domain;
     var textarea;
     if ("translate.google.cn" == domain ||
@@ -7,19 +18,37 @@ function getSrcSentences(){
     else if ("fanyi.baidu.com" == domain)
         textarea = document.getElementById("baidu_translate_input");
 
-    /* Remove all the newline in String. */
+    /* 2. remove all the newline in string. */
     var string = textarea.value;
-    var re = new RegExp("\\n", "gm");
+    var re = new RegExp("\\n", "g");
     string = string.replace(re, " ");
-    //console.log(string);
+    //console.log("Before replace: " + string);
 
-    /* Let every sentence separated by a blank line. */
-    var re = new RegExp("[\.!;]\\s*");
-    var sentences = string.split(re, 100);
+    /* 3. replace the periods that need to be excluded */
+    for (i in excludedRegExps) {
+        //console.log("ere: " + excludedRegExps[i]);
+        string = string.replace(new RegExp(excludedRegExps[i], "g"),
+            String.fromCharCode(7));
+    }
+
+    //console.log("After replace: " + string);
+
+    /* 4. let every sentence separated by a blank line. */
+    re = new RegExp("[\\.!;]\\s*");
+    var sentences = string.split(re);
+
+    /* 5. restore the periods that be replaced */
+    re = new RegExp(String.fromCharCode(7), "g");
+    for (i in sentences) {
+        sentences[i] = sentences[i].replace(re, ".") + ".\n";
+        //console.log("After split: " + sentences[i]);
+    }
+
+    /* 6. return */
     return sentences;
 }
 
-function getDstSentences() {
+function genDstSentences() {
     /* Get translate text, src text is already in sentences array*/
     var translateSpan = document.getElementsByClassName("tlid-translation translation");
     if (translateSpan.length != 1)
@@ -27,7 +56,7 @@ function getDstSentences() {
 
     //console.log(translateSpan[0].innerText);
     var allText = translateSpan[0].innerText;
-    var re = new RegExp("\\n", "gm");
+    var re = new RegExp("\\n", "g");
     allText = allText.replace(re, " ");
     /* split translated text into sentences */
     re = new RegExp("[。！；]\\s*");
@@ -45,15 +74,11 @@ function removeNewLine(){
     else if ("fanyi.baidu.com" == domain)
         textarea = document.getElementById("baidu_translate_input");
 
-    var sentences = getSrcSentences();
-    var reviseRe = new RegExp(".*et al$"); // 修正et al.的换行问题
+    var sentences = genSrcSentences();
     var result = "";
-    for (var i = 0; i < sentences.length-1; i++) // length-1: remove the extra blank lines.
+    // length-1: remove the extra blank lines.
+    for (var i = 0; i < sentences.length-1; i++) 
     {
-        if (sentences[i].search(reviseRe) == -1)
-            sentences[i] += ".\n"; /* TODO: Use the original punctuation */
-        else
-            sentences[i] += " ";
         /* copy to result */
         result += sentences[i];
     }
@@ -79,14 +104,14 @@ function translateContrast(){
         return;
     inject_div = inject_divs[0];
     /* Create constrast */
-    var sSentences = getSrcSentences();
-    var tSentences = getDstSentences();
+    var sSentences = genSrcSentences();
+    var tSentences = genDstSentences();
     for (var i = 0; i < sSentences.length-1; i++) {
         var entryDiv = document.createElement("div");
         entryDiv.setAttribute("class", "ijt_constrast_entry");
         var leftTextDiv = document.createElement("div");
         leftTextDiv.setAttribute("class", "ijt_constrast_left_text");
-        leftTextDiv.innerText = sSentences[i] + ".";
+        leftTextDiv.innerText = sSentences[i];
         var rightTextDiv = document.createElement("div");
         rightTextDiv.setAttribute("class", "ijt_constrast_right_text");
         rightTextDiv.innerText = tSentences[i] + "。";

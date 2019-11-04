@@ -3,7 +3,7 @@
 
     "name": "GoogleTranslateTools",
     "description": "Auto remove extra newline in pdf copied text.",
-    "version": "2.0",
+    "version": "2.0.1",
     "background": {
         "scripts": ["./js/background.js"],
         "persistent": false
