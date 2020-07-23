@@ -5,6 +5,10 @@ var excludedRegExps = new Array(
     "(?<=e\\.g)\\.|(?<=e)\\.(?=g)",
     /* et. al */
     "(?<=et)\\.",
+    /* et al., */
+    "(?<=et al)\\.(?=,)",
+    /* [ *.* ] */
+    "(?<=\\[.*)\\.(?=.*\\])",
     /* sec 2.3.4 */
     "(?<=[0-9]+)\\.(?=[0-9]+)")
 
@@ -34,7 +38,7 @@ function genSrcSentences(){
     //console.log("After replace: " + string);
 
     /* 4. let every sentence separated by a blank line. */
-    re = new RegExp("[\\.!;]\\s*");
+    re = new RegExp("[\\.!:]\\s*");
     var sentences = string.split(re);
 
     /* 5. restore the periods that be replaced */
